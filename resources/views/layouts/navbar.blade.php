@@ -30,6 +30,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('customization') }}">{{ __('Customization') }}</a>
                         </li>
+                        @role('admin')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('adminpanel') }}">{{ __('Adminpanel') }}</a>
+                        </li>
+                        @endrole
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('configuration') }}">{{ __('Configuration') }}</a>
                         </li>

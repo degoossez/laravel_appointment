@@ -44,7 +44,12 @@ Route::get('/loadAppointmentTypes','AppointmentsController@loadAppointmentTypes'
 Route::get('/loadAppointmentTypesForSelect','AppointmentsController@loadAppointmentTypesForSelect')->middleware('auth');
 //get all created appointments on a selected day from the "appointments" mysql table
 Route::get('/appointmentsonday/{selectedday}', 'AppointmentsController@getAppointmentsForSelectedDay')->middleware('auth');
+//create open time
+Route::get('/createOpenTime/{open_times_day_php}/{start_date}/{end_date}/{start_time}/{end_time}/{appointment_types_php}','ConfigurationController@addOpeningTimes')->middleware('auth');
 
+
+//Admin panel for admins only
+Route::get('/adminpanel', 'AdminController@index')->name('adminpanel')->middleware('auth');
 /*
 |--------------------------------------------------------------------------
 | Public website pages

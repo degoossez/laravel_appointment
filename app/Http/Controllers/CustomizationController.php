@@ -8,6 +8,16 @@ use App\appointments_types;
 class CustomizationController extends Controller
 {
     /**
+     * Create a new controller instance.
+     * 
+     * @return void
+     */
+    public function __construct()
+    {
+        //Protect that only users with role company can get to this page
+        $this->middleware(['role:company']);
+    }
+    /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Http\Response

@@ -94,6 +94,8 @@ class RegisterController extends Controller
         $this->guard()->login($user);
         $license = new License();
         $license->store(Auth::id());
+        $user->assignRole('company');
+        $user->assignRole('admin');
         return redirect()->to('/dashboard');
     }
 }

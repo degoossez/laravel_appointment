@@ -8,14 +8,15 @@ use App\appointments_types;
 use App\appointments;
 class AppointmentsController extends Controller
 {
-        /**
+    /**
      * Create a new controller instance.
-     *
+     * 
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //Protect that only users with role company can get to this page
+        $this->middleware(['role:company']);
     }
     /**
      * getAppointmentsForSelectedDay function to provide all appointments for a given day for the current user.
@@ -152,12 +153,5 @@ class AppointmentsController extends Controller
         $appType = new appointments_types();
         $app_types = $appType->getAllAppointmentTypes();
         return json_encode($app_types);        
-    }
-    /*
-    *   Function to add a new "opening times" for a specific user.
-    *   This function gets called by Javascript in the bootstrap Modal "add_open_times.php"
-    */
-    public function addOpeningTimes(){
-        
     }
 }

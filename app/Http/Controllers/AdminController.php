@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Traits\HasRoles;
 
-class DashboardController extends Controller
+class AdminController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -16,8 +13,8 @@ class DashboardController extends Controller
      */
     public function __construct()
     {
-        //Protect that only users with role company can get to this page
-        $this->middleware(['role:company']);
+        //Protect that only users with role admin can get to this page
+        $this->middleware(['role:admin']);
     }
     /**
      * Show the application dashboard.
@@ -26,6 +23,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        return view('adminpanel');
     }
 }

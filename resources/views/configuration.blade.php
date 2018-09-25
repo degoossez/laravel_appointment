@@ -26,7 +26,7 @@
                     <div class="col-md-6 custom-hello-week vertical-menu" id="app_types" onload="loadAppointmentTypes(false)">
                     </div>
                     <div class="col-md-6 custom-hello-week">
-                        <form>
+                        <form action="javascript:void(0);">
                             <div class="row">
                                 <div class="col">
                                     <label>Name of the appointment: </label><input type="text" name="Description" id="Description" class="form-control" placeholder="Description">
@@ -57,17 +57,18 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">Opening times</div>
+                    <!-- TODO: Create list for each day, then show list of opening times for this specific day -->
                 </div>
             </div>
             <div class="row col-md-12 top-buffer">
                 <div class="col-md-6 custom-hello-week vertical-menu" id="open_times" onload="loadOpenTimes()">
                 </div>
                 <div class="col-md-6 custom-hello-week">
-                    <form>
+                    <form action="javascript:void(0);">
                         <div class="row">
                             <div class="col">    
                                 <label for="weekdays">Select day(s) of the week:</label>
-                                <select class="multi-select-weekdays form-control" name="weekdays" multiple="multiple"> 
+                                <select class="multi-select-weekdays form-control" id="open_times_days" name="weekdays" multiple="multiple"> 
                                     <option value="Monday">Monday</option>
                                     <option value="Tuesday">Tuesday</option>
                                     <option value="Wednesday">Wednesday</option>
@@ -137,13 +138,13 @@
                         <div class="row">
                             <div class="col">
                                 <label for="selectable-apptypes">Allowed appointments:</label>
-                                <select class="multi-select-appointment-types form-control" name="selectable-apptypes" multiple="multiple"> 
+                                <select class="multi-select-appointment-types form-control" id="selectable-apptypes" name="selectable-apptypes" multiple="multiple"> 
                                 </select>  
                             </div>
                         </div>
                         <div class="row">
                             <div class="col top-buffer-small">
-                                <button onclick="submitAppointmentType()">Add opening times</button>
+                                <button onclick="submitOpenTime()">Add opening times</button>
                             </div>
                         </div>
                     </form>
@@ -164,7 +165,7 @@
             setTimeout(function(){
                 loadAppointmentTypes(true);
             }, 100);
-            $('.multi-select-weekdays').select2({
+            $('.multi-select-weekdays').select2({ //https://select2.org/
                 placeholder: "Select day(s) of the week",
                 allowClear: true,
                 closeOnSelect: false
@@ -203,6 +204,10 @@
                     loadAppointmentTypes(false);
                     waitingDialog.hide();
                 }
+                else{
+                    waitingDialog.hide();
+                    alert("The appointment creation went wrong. Please try again later or contact the system administrator.")
+                }
             });
         }
         function editAppointment(id){
@@ -227,6 +232,41 @@
             } else {
                 //Do nothing, user clicked cancel on deletion of the app type
             }
+        }
+        function submitOpenTime(){
+            var open_times_days = $('.multi-select-weekdays').select2('data');
+            var open_times_day_php ="";
+            //getting all ID from the list and put them in correct format for PHP
+            for(var i=0;i<open_times_days.length;i++){
+                open_times_day_php = open_times_day_php + open_times_days[i].id + ".";
+            }
+            var start_date = document.getElementById("start_date_picker").value;
+            var end_date = document.getElementById("end_date_picker").value;
+            if(end_date == ""){ //no end date so appointment lasts 10 years
+                var start = start_date.split("-"); //split the start date to get the year
+                var end_year = parseInt(start[2],10) +10; //convert year to decimal number
+                end_date = start[0] + "-" + start[1] + "-" + end_year.toString(); 
+            }
+            var start_time = document.getElementById("start_time_picker").value;
+            var end_time = document.getElementById("end_time_picker").value;
+            var appointment_types = $('.multi-select-appointment-types').select2('data');
+            var appointment_types_php ="";
+            //getting all ID from the appointment type selected list and put them in correct format for PHP
+            for(var i=0;i<appointment_types.length;i++){
+                appointment_types_php = appointment_types_php + appointment_types[i].id + ".";
+            }            
+            var request = $.get('/createOpenTime/' + open_times_day_php + "/" + start_date + "/" + end_date  + "/" + start_time + "/" + end_time  + "/" + appointment_types_php);
+            waitingDialog.show('Creating opening times..');
+            request.done(function(response) {
+                if(response.includes("successfully")){
+                    alert("Open times added.")
+                    waitingDialog.hide();
+                }
+                else{
+                    waitingDialog.hide();
+                    alert("The creation of opening times went wrong. Please try again later or contact the system administrator.")
+                }
+            });      
         }
         //link a function to show of the modal to add varaibles 
         $('#modifyAppTypeModal').on('show.bs.modal', function (event) {

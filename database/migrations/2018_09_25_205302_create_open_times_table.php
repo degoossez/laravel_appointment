@@ -16,12 +16,10 @@ class CreateOpenTimesTable extends Migration
         Schema::create('open_times', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->boolean('recurrent');
-            $table->integer('dayOfTheWeek')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->time('start_time');
-            $table->time('end_time');                        
+            $table->time('end_time'); 
             $table->timestamps();
         });
     }
