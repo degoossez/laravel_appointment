@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Open_times;
+
 class ConfigurationController extends Controller
 {
     /**
@@ -42,5 +43,13 @@ class ConfigurationController extends Controller
         $date_split = explode("-",$dateDDMMYYYY);
         $dateYYYYMMDD = $date_split[2]."-".$date_split[1]."-".$date_split[0];
         return $dateYYYYMMDD;
+    }
+    /**
+     * Function to get the opening times of a specific date which is specified in the argument
+     * This is used in the configuration view 
+     */
+    static public function getOpenTimesForDay($day_of_the_week){
+        $openTime = new Open_times();
+        return $openTime->getOpenTimesForDay($day_of_the_week);
     }
 }

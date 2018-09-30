@@ -62,6 +62,77 @@
             </div>
             <div class="row col-md-12 top-buffer">
                 <div class="col-md-6 custom-hello-week vertical-menu" id="open_times" onload="loadOpenTimes()">
+                    @inject('configcontroller', 'App\Http\Controllers\ConfigurationController')
+                    <div class="card">
+                        <div class="card-header">
+                          Monday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Monday');?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                          Tuesday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Tuesday');?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                          Wednesday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Wednesday');?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                          Thursday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Thursday');?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                          Friday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Friday');?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                          Saturday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Saturday');?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                          Sunday
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group-flush">
+                                <?php echo $configcontroller::getOpenTimesForDay('Sunday');?>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6 custom-hello-week">
                     <form action="javascript:void(0);">
@@ -233,6 +304,9 @@
                 //Do nothing, user clicked cancel on deletion of the app type
             }
         }
+        /*
+        * This function adds opening hours. It gets the info from the input fields and calls the correct PHP functions
+        */
         function submitOpenTime(){
             var open_times_days = $('.multi-select-weekdays').select2('data');
             var open_times_day_php ="";
@@ -268,6 +342,13 @@
                 }
             });      
         }
+        /*
+        * This function is used to delete opening hours.
+        */
+        function removeAppointment(id,weekday){
+            alert(id); //TODO: call function to remove the correct id and weekday. If there are no more weekdays for open_times, remove the open_times
+        }
+
         //link a function to show of the modal to add varaibles 
         $('#modifyAppTypeModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal

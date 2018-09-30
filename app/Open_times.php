@@ -22,7 +22,7 @@ class Open_times extends Model
     /**
      * Create a new open times in the database.
      *
-     * @param  Request  $request
+     * @param  Request  //TODO
      * @return Response
      */
     public function store(string $open_days,string $start_date, string $end_date,string $start_time, string $end_time,string $appointment_types)
@@ -83,5 +83,51 @@ class Open_times extends Model
             return "You are not authenticated. Please login or contact the system administrator.";
         }
     }
-
+    /**
+     * Select all open times for a specific day and user
+     * select id from open_times where user_id = $USER_ID;
+     * select open_times_id from opentimes_has_days where id in "above query result" and day_of_the_week = $specific weekday;
+     *
+     * @param  Request  //TODO
+     * @return Response
+     */
+    function getOpenTimesForDay($day_of_the_week){
+        $open_times_id = DB::table('open_times')
+                                    ->select('id')
+                                    ->where('user_id','=',Auth::user()->id)
+                                    ->get();
+        $open_times_id_values = array();
+        foreach($open_times_id as $r){
+            $open_times_id_values[] = $r->id;
+        }
+        //return $open_times_id_values;
+        $open_times_id_weekday = DB::table('opentimes_has_days')
+                                    ->select('open_times_id')
+                                    ->where('day_of_the_week','=',$day_of_the_week)
+                                    ->whereIn('open_times_id',$open_times_id_values)
+                                    ->get();
+        $open_times_id_values = array();
+        foreach($open_times_id_weekday as $r){
+            $open_times_id_values[] = $r->open_times_id;
+        }
+        $open_times_info = DB::table('open_times')
+                                    ->select('id','start_date','end_date','start_time','end_time')
+                                    ->whereIn('id',$open_times_id_values)
+                                    ->get();
+        $html_for_day = "";
+        /*
+        * 24 hours time way //TODO: check in settings time notation and apply here with if statement
+        */
+        foreach($open_times_info as $info){
+            $html_for_day .= "<li class=\"list-group-item\">";
+            $html_for_day .= "From " . $info->start_date . " until " . $info->end_date;
+            $html_for_day .= " between " . substr($info->start_time,0,-3) . "h and " . substr($info->end_time,0,-3) ."h";
+            $html_for_day .= "<i onclick=\"removeAppointment(" . $info->id . ",'" . $day_of_the_week .  "')\" class=\"far fa-trash-alt\"></i>";
+            $html_for_day .= "</li>";
+        }
+        if($html_for_day == ""){
+            $html_for_day = "<li class=\"list-group-item\">Closed. </li>";
+        }
+        return $html_for_day;
+    }
 }
