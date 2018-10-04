@@ -119,15 +119,61 @@ class Open_times extends Model
         * 24 hours time way //TODO: check in settings time notation and apply here with if statement
         */
         foreach($open_times_info as $info){
-            $html_for_day .= "<li class=\"list-group-item\">";
+            $html_for_day .= "<li id=\"open_times_".$info->id."_".$day_of_the_week."\"" . "class=\"list-group-item\">";
             $html_for_day .= "From " . $info->start_date . " until " . $info->end_date;
             $html_for_day .= " between " . substr($info->start_time,0,-3) . "h and " . substr($info->end_time,0,-3) ."h";
-            $html_for_day .= "<i onclick=\"removeAppointment(" . $info->id . ",'" . $day_of_the_week .  "')\" class=\"far fa-trash-alt\"></i>";
+            $html_for_day .= "<i onclick=\"removeOpenWeekday(" . $info->id . ",'" . $day_of_the_week .  "')\" class=\"far fa-trash-alt\"></i>";
             $html_for_day .= "</li>";
         }
         if($html_for_day == ""){
             $html_for_day = "<li class=\"list-group-item\">Closed. </li>";
         }
         return $html_for_day;
+    }
+    /**
+     * Remove the opening times for a specific ID and weekday
+     * 
+     * @param  Request  //TODO
+     * @return Response
+     */
+    function removeOpeningTimesForDay($open_times_id, $day_of_the_week){
+        /*$open_times_id = DB::table('open_times')
+                                    ->select('id')
+                                    ->where('user_id','=',Auth::user()->id)
+                                    ->get();
+        */
+        $deleted = DB::table('opentimes_has_days')
+                    ->where('open_times_id','=',$open_times_id)
+                    ->where('day_of_the_week','=',$day_of_the_week)
+                    ->delete();
+        if($deleted){
+            if(DB::table('opentimes_has_days')->where('open_times_id',$open_times_id)->exists()){
+                return "Opening time deleted successfully";
+            }
+            else{
+                if(DB::table('open_times')->where('id','=',$open_times_id)->delete()){
+                    return "Opening time deleted successfully";
+                }
+                else{
+                    /**
+                     * When the delete of the open_times is failed, the day of the week has to be recovered.
+                     */
+                    $opentime_days_id = DB::table('opentimes_has_days')->insertGetId( [
+                        'open_times_id' => $open_times_id,
+                        'day_of_the_week' => $day_of_the_week,
+                        'created_at' =>  \Carbon\Carbon::now(), #To update the full table
+                        'updated_at' => \Carbon\Carbon::now(),  #To update the full table
+                    ]);
+                    if(empty($opentime_days_id)){
+                        return "The deletion failed & the recovery of the opening day failed.";
+                    }                    
+                    return "The deletion failed.";
+                }
+            }
+            
+        }
+        else{
+            return "The deletion failed.";
+        }
     }
 }

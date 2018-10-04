@@ -345,8 +345,19 @@
         /*
         * This function is used to delete opening hours.
         */
-        function removeAppointment(id,weekday){
-            alert(id); //TODO: call function to remove the correct id and weekday. If there are no more weekdays for open_times, remove the open_times
+        function removeOpenWeekday(id,weekday){
+            var request = $.get('/removeOpenWeekday/' + id + "/" + weekday);
+            request.done(function(response) {
+                if(response.includes("successfully")){
+                    alert("Opening hours removed for " + weekday + ".");
+                    var element = document.getElementById("open_times_" + id + "_" + weekday);
+                    element.parentNode.removeChild(element);
+                }
+                else{
+                    waitingDialog.hide();
+                    alert("The deletion of opening times went wrong. Please try again later or contact the system administrator.")
+                }
+            });   
         }
 
         //link a function to show of the modal to add varaibles 

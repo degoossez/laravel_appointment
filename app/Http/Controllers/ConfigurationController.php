@@ -52,4 +52,12 @@ class ConfigurationController extends Controller
         $openTime = new Open_times();
         return $openTime->getOpenTimesForDay($day_of_the_week);
     }
+    /**
+     * Function to delete the opening times of a specific date which is specified in the argument with an ID and day
+     * This is used in the configuration view 
+     */
+    public function removeOpeningTimesForDay($open_times_id, $day_of_the_week){
+        $openTime = new Open_times();
+        return $openTime->removeOpeningTimesForDay($open_times_id,$day_of_the_week);
+    }
 }

@@ -46,7 +46,8 @@ Route::get('/loadAppointmentTypesForSelect','AppointmentsController@loadAppointm
 Route::get('/appointmentsonday/{selectedday}', 'AppointmentsController@getAppointmentsForSelectedDay')->middleware('auth');
 //create open time
 Route::get('/createOpenTime/{open_times_day_php}/{start_date}/{end_date}/{start_time}/{end_time}/{appointment_types_php}','ConfigurationController@addOpeningTimes')->middleware('auth');
-
+//remove open time for specific day removeOpenWeekday
+Route::get('/removeOpenWeekday/{open_times_id}/{open_times_weekday}','ConfigurationController@removeOpeningTimesForDay')->middleware('auth');
 
 //Admin panel for admins only
 Route::get('/adminpanel', 'AdminController@index')->name('adminpanel')->middleware('auth');
